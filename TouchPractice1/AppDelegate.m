@@ -7,22 +7,46 @@
 //
 
 #import "AppDelegate.h"
+#import "NetworkManager.h"
 
-@implementation AppDelegate
+@implementation AppDelegate{
+    char                _networkOperationCountDummy;
+    
+}
+
+@synthesize window;
+@synthesize mainViewController;
+@synthesize navi,selectedImage;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    // Override point for customization after application launch.
-    self.window.backgroundColor = [UIColor whiteColor];
+    /*---------------------------------------------------------------------------*/
+    
+    /*shake to clear*/
+    
+    //application.applicationSupportsShakeToEdit = YES;
+    
+    /*---------------------------------------------------------------------------*/
+    self.window=[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen]bounds]];
+    self.mainViewController=[[MainViewController alloc] init];
+    self.navi=[[UINavigationController alloc]initWithRootViewController:mainViewController];
+    self.window.rootViewController=navi;
     [self.window makeKeyAndVisible];
     return YES;
+    
+    /*--------------------------------------------------------------------------*/
+    
+    [[NetworkManager sharedInstance] addObserver:self forKeyPath:@"networkOperationCount" options:NSKeyValueObservingOptionInitial context:&self->_networkOperationCountDummy];
+    
+    /*-------------------------------------------------------------------------*/
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+    
+   
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
@@ -44,6 +68,15 @@
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if (context == &self->_networkOperationCountDummy) {
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = ([NetworkManager sharedInstance].networkOperationCount != 0);
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
 }
 
 @end
