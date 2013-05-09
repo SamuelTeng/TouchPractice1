@@ -7,10 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MainViewController.h"
+@interface AppDelegate : UIResponder <UIApplicationDelegate>{
+    UIImage *selectedImage;
+}
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@property(nonatomic,strong)UIWindow *window;
+@property(nonatomic,strong)UINavigationController *navi;
+@property(nonatomic,strong)MainViewController *mainViewController;
 
-@property (strong, nonatomic) UIWindow *window;
+/*setting these two properties in order to allow all viewControllers sending objects to rootViewController since AppDelegat works as a middle station for all viewControllers include root one*/
+
 @property(nonatomic,strong)UIImage *selectedImage;
 @property(nonatomic,strong)UIImage *pantsSelectedImage;
 
